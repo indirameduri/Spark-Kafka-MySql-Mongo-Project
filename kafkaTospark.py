@@ -41,7 +41,7 @@ def benefits_cost_sharing1():
                                                        SourceName = i[9],\
                                                        StateCode = i[10]))
      
-    bdf1 = spark.createDataFrame(Benefits_row_rdd1)
+    bdf1 = spark.createDataFrame(benefits_row_rdd1)
     bdf1.show(2)
     #Spark to Mongo
     uri = 'mongodb://localhost/healthInsurance.dbs'
@@ -125,7 +125,7 @@ def benefits_cost_sharing3():
                                                        SourceName = i[9],\
                                                        StateCode = i[10]))
      
-    bdf3 = spark.createDataFrame(Benefits_row_rdd3)
+    bdf3 = spark.createDataFrame(benefits_row_rdd3)
     bdf3.show(2)
     #Spark to Mongo
     uri = 'mongodb://localhost/healthInsurance.dbs'
@@ -164,7 +164,7 @@ def benefits_cost_sharing4():
                                                        SourceName = i[9],\
                                                        StateCode = i[10]))
      
-    bdfF4 = spark.createDataFrame(Benefits_row_rdd4)
+    bdfF4 = spark.createDataFrame(benefits_row_rdd4)
     bdf4.show(5)
     #Spark to Mongo
     uri = 'mongodb://localhost/healthInsurance.dbs'
@@ -186,11 +186,11 @@ def network():
     network_df = df.selectExpr("CAST(value AS STRING)")
     print('\nNetwork Topic transfered to Spark')
     
-    output_query = network_df.writeStream.queryName("Network").format("memory").start()
+    output_query = network_df.writeStream.queryName("network").format("memory").start()
     output_query.awaitTermination(10)
    
     
-    networkdf = spark.sql('select * from Network')
+    networkdf = spark.sql('select * from network')
     
     
     network_rdd = networkdf.rdd.map(lambda i: i['value'].split(','))
@@ -209,7 +209,7 @@ def network():
                                                     MarketCoverage= i[12],
                                                     DentalOnlyPlan = i[13]))
     
-    ndf = spark.createDataFrame(Network_row_rdd)
+    ndf = spark.createDataFrame(network_row_rdd)
     ndf.show(5)
     
     uri = 'mongodb://localhost/healthInsurance.dbs'
@@ -230,10 +230,10 @@ def service_area():
     df = spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092").option("subscribe","ServiceArea").option("startingOffsets","earliest").load()
     serviceA_df = df.selectExpr("CAST(value AS STRING)")
     
-    output_query =serviceA_df.writeStream.queryName("ServiceArea").format("memory").start()
+    output_query =serviceA_df.writeStream.queryName("service_area").format("memory").start()
     output_query.awaitTermination(10)
        
-    serviceA_df = spark.sql('select * from ServiceArea')
+    serviceA_df = spark.sql('select * from service_area')
     
     serviceA_rdd = serviceA_df.rdd.map(lambda i: i['value'].split(','))
     serviceA_row_rdd = serviceA_rdd.map(lambda i: Row(BusinessYear = i[0],\
@@ -279,11 +279,11 @@ def insurance():
     insurance_df = df.selectExpr("CAST(value AS STRING)")
     print('\nInsurance Topic transfered to Spark')
     
-    output_query = insurance_df.writeStream.queryName("Insurance").format("memory").start()
+    output_query = insurance_df.writeStream.queryName("insurance").format("memory").start()
     output_query.awaitTermination(10)
     
     
-    insurance_df = spark.sql('select * from Insurance')
+    insurance_df = spark.sql('select * from insurance')
     
     insurance_rdd = insurance_df.rdd.map(lambda i: i['value'].split('\t'))
     insurance_row_rdd = insurance_rdd.map(lambda i: Row(age = i[0],\
@@ -318,11 +318,11 @@ def plan_attribute():
     planA_df = df.selectExpr("CAST(value AS STRING)")
     print('\nPlanAttribute Topic Transfered to spark')
     
-    output_query = planA_df.writeStream.queryName("PlanA").format("memory").start()
+    output_query = planA_df.writeStream.queryName("plan_attribute").format("memory").start()
     output_query.awaitTermination(10)
     
     
-    planA_df = spark.sql('select * from PlanA')
+    planA_df = spark.sql('select * from plan_attribute')
     
     planA_rdd = planA_df.rdd.map(lambda i: i['value'].split('\t'))
     planA_row_rdd = planA_rdd.map(lambda i: Row(AttributesID=i[0], \
@@ -370,7 +370,7 @@ def plan_attribute():
                                                WellnessProgramOffered=i[42]))
     
          
-    padf = spark.createDataFrame(PlanA_row_rdd)
+    padf = spark.createDataFrame(planA_row_rdd)
     padf.show(5)
        
     uri = 'mongodb://localhost/healthInsurance.dbs'
